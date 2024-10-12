@@ -1,0 +1,9 @@
+#recording-indicator,
+#transcription {
+  text-align: center;
+}
+
+#audio-container {
+  display: flex;
+  justify-content: center;
+}

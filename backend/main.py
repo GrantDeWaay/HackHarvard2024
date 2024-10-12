@@ -1,16 +1,11 @@
 import os
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import openai
 import subprocess
 
 UPLOAD_FOLDER = "uploads"
 
 app = Flask(__name__)
-CORS(
-    app,
-    resources={r"/*": {"origins": "*"}},
-)
 
 # Set your OpenAI API key
 
