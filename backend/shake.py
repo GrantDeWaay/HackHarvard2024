@@ -1,20 +1,20 @@
 class Shake:
-    def __init__(self, config):
-        # 0 = small, 1 = large
-        if 'l' in config:
+    def __init__(self, specs):
+        self.total_string = specs
+        if 'l' in specs:
             self.size = 'l'
         else:
             self.size = 's'
         # 0 = choco, 1 = vanilla, 2 = strawberry
-        if 'v' in config:
+        if 'v' in specs:
             self.flavor = 'v'
-        elif 'S' in config:
+        elif 'S' in specs:
             self.flavor = 'S'
         else:
             self.flavor = 'c'
 
     def __str__(self):
-        return self.menu_text()
+        return "shake " + self.total_string
 
     def menu_text(self):
         return_str = "SHAKE"

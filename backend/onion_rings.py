@@ -1,13 +1,14 @@
 class Onion_Rings:
-    def __init__(self, config):
+    def __init__(self, specs):
         # 0 = small, 1 = large
-        if 'l' in config:
+        self.total_string = specs
+        if 'l' in specs:
            self.size = 'l'
         else:
            self.size = 's'
 
     def __str__(self):
-     return self.menu_text()
+        return "onion rings " + self.total_string
 
     def menu_text(self):
        return_str = "ON RING"

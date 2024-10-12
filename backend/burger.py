@@ -1,6 +1,6 @@
 class Burger:
     def __init__(self, specs):
-
+        self.total_string = specs
         self.lettuce = 'l' not in specs
         self.tomato = 't' not in specs
         self.onion = 'o' not in specs
@@ -8,7 +8,7 @@ class Burger:
         self.sauce = 's' not in specs
 
     def __str__(self):
-      return self.menu_text()
+        return "burger " + self.total_string
     
     def menu_text(self):
        return_str = "BURGR"
