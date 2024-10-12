@@ -44,3 +44,6 @@ yarn-error.log*
 
 # MacOS specific
 *.DS_Store
+
+# backend
+/backend/uploads/

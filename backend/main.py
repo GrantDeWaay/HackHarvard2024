@@ -17,6 +17,8 @@ CORS(
 # Array to store transcriptions
 transcriptions = []
 
+client = openai.OpenAI()
+
 
 # Endpoint to handle MP3 upload and transcription
 @app.route("/transcribe", methods=["POST"])
@@ -36,19 +38,21 @@ def transcribe_audio():
     wav_path = os.path.join(UPLOAD_FOLDER, wav_filename)
 
     try:
-        subprocess.run(["ffmpeg", "-i", webm_path, wav_path], check=True)
+        subprocess.run(["ffmpeg", "-y", "-i", webm_path, wav_path], check=True)
     except subprocess.CalledProcessError as e:
         return jsonify({"error": "Conversion failed", "message": str(e)}), 500
 
     # Transcribe the audio using OpenAI API
     with open(wav_path, "rb") as audio_file:
-        transcription = openai.Audio.transcribe("whisper-1", audio_file)
+        transcription = client.audio.transcriptions.create(
+            model="whisper-1", file=audio_file
+        )
 
     # Save transcription to array
-    transcriptions.append(transcription["text"])
+    transcriptions.append(transcription.text)
 
     # Respond with transcription
-    return jsonify({"transcription": transcription["text"]}), 200
+    return jsonify({"transcription": transcription.text}), 200
 
 
 @app.route("/upload", methods=["OPTIONS"])
