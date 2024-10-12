@@ -23,8 +23,6 @@ client = openai.OpenAI()
 
 order = Order()
 
-message_history = [{"role": "system", "content": instruction_text_formatting}]
-
 # Endpoint to handle MP3 upload and transcription
 @app.route("/transcribe", methods=["POST"])
 def transcribe_audio():
