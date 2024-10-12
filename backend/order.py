@@ -1,6 +1,6 @@
-import ast
 import os
 import base64
+import concurrent
 from flask import json, jsonify
 import openai
 from burger import Burger
@@ -58,7 +58,6 @@ class Order:
         self.items = []
 
     def add_to_order(self, specs):
-        print([str(item) for item in specs])
         for item in specs:
             if "burger" in item:
                 self.items.append(Burger(item[6:]))
@@ -69,54 +68,69 @@ class Order:
                 self.items.append(Fries(item[5:]))
             elif "onion rings" in item:
                 self.items.append(Onion_Rings(item[11:]))
-        for x in range(len(self.items)):
-            print(x)
+            print([str(item) for item in specs])
 
-    def conversation(self, user_input):
-        # Append user input to message history
-        self.message_history.append({
-            "role": "user",
-            "content": [{"type": "text", "text": user_input}]
-        })
+def conversation(self, user_input):
+    # Append user input to message history
+    self.message_history.append({
+        "role": "user",
+        "content": [{"type": "text", "text": user_input}]
+    })
 
-        # Generate response from fast food worker
-        completion_fast_food_worker = client.chat.completions.create(
+    # Function to get fast food worker response
+    def get_fast_food_worker_response():
+        return client.chat.completions.create(
             model="gpt-4o",
             messages=self.message_history
         )
 
-        # Generate ordered food response
-        completion_data_ordered_food = client.chat.completions.create(
+    # Function to get ordered food response
+    def get_ordered_food_response():
+        return client.chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": instruction_text_formatting},
                 {"role": "user", "content": user_input}
             ]
         )
-        # Update order based on completion data
-        
-        print("RIGHT HERE ::::::::::"+ completion_data_ordered_food.choices[0].message.content + " user input: " + user_input)
-        print(json.loads(completion_data_ordered_food.choices[0].message.content))
-        self.add_to_order(json.loads(completion_data_ordered_food.choices[0].message.content))
 
-        # Generate speech audio response
+    # Function to generate speech audio response
+    def generate_speech_audio_response(fast_food_worker_response):
         response = client.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input=completion_fast_food_worker.choices[0].message.content,
+            input=fast_food_worker_response.choices[0].message.content,
         )
         response.stream_to_file("speech.wav")
+        return "speech.wav"
 
-        # Convert audio file to base64
-        with open('speech.wav', 'rb') as audio_file:
-            audio_data = audio_file.read()
-            audio_base64 = base64.b64encode(audio_data).decode('utf-8')
+    # Using concurrent.futures to run API calls and audio generation in parallel
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Schedule the tasks to be executed concurrently
+        future_fast_food_worker = executor.submit(get_fast_food_worker_response)
+        future_ordered_food = executor.submit(get_ordered_food_response)
 
-        return jsonify({"transcription": user_input, "audio_base64": audio_base64, "menu_items": [str(item) for item in self.items]}), 200
-def convert_string_to_array(string_array):
-    try:
-        # Try to parse as JSON first
-        return json.loads(string_array)
-    except json.JSONDecodeError:
-        # Fallback to ast.literal_eval
-        return ast.literal_eval(string_array)
+        # Wait for both API calls to complete
+        completion_fast_food_worker = future_fast_food_worker.result()
+        completion_data_ordered_food = future_ordered_food.result()
+
+        # Process the ordered food response
+        self.add_to_order(json.loads(completion_data_ordered_food.choices[0].message.content))
+
+        # Now generate speech audio concurrently
+        future_speech_audio = executor.submit(generate_speech_audio_response, completion_fast_food_worker)
+
+        # Wait for the speech audio to be generated
+        speech_file = future_speech_audio.result()
+
+    # Convert audio file to base64
+    with open(speech_file, 'rb') as audio_file:
+        audio_data = audio_file.read()
+        audio_base64 = base64.b64encode(audio_data).decode('utf-8')
+
+    # Return the final response
+    return jsonify({
+        "transcription": user_input,
+        "audio_base64": audio_base64,
+        "menu_items": [str(item) for item in self.items]
+    }), 200
