@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import WaveDecoder from "./WaveDecoder";
 
 const THRESHOLD = 0.07;
 const WAIT_TIME_MS = 2000;
@@ -13,6 +14,7 @@ const AudioRecorder: React.FC = () => {
   const [transcription, setTranscription] = useState<string | null>(null);
   const silenceTimeout = useRef<number | null>(null);
   const silenceDetected = useRef(false); // Track silence detection
+  const [speechResponse, setSpeechResponse] = useState<string | null>(null);
 
   const monitorAudioLevel = useCallback(
     (analyser: AnalyserNode) => {
@@ -149,6 +151,7 @@ const AudioRecorder: React.FC = () => {
       const result = await response.json();
       console.log("File uploaded successfully:", result);
       changeTranscription(result);
+      setSpeechResponse(result.audio_base64);
     } catch (error) {
       console.error("Error uploading file:", error);
     }
@@ -169,11 +172,16 @@ const AudioRecorder: React.FC = () => {
       </h1>
 
       {audioURL && (
-        <div id="audio-container">
+        <div className="audio-container">
           <audio src={audioURL} controls />
         </div>
       )}
       {transcription && <p id="transcription">{transcription}</p>}
+      {speechResponse && (
+        <div className="audio-container">
+          <WaveDecoder base64Data={speechResponse} />
+        </div>
+      )}
     </div>
   );
 };
