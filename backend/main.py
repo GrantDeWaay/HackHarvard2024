@@ -1,19 +1,29 @@
+import base64
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import openai
 import subprocess
+
+from order import Order
 
 UPLOAD_FOLDER = "uploads"
 
 app = Flask(__name__)
 
+
 # Set your OpenAI API key
 
 # Array to store transcriptions
 transcriptions = []
-
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 client = openai.OpenAI()
 
+order = Order()
+
+message_history = [{"role": "system", "content": instruction_text_formatting}]
 
 # Endpoint to handle MP3 upload and transcription
 @app.route("/transcribe", methods=["POST"])
@@ -42,13 +52,8 @@ def transcribe_audio():
         transcription = client.audio.transcriptions.create(
             model="whisper-1", file=audio_file
         )
-
-    # Save transcription to array
-    transcriptions.append(transcription.text)
-
-    # Respond with transcription
-    return jsonify({"transcription": transcription.text}), 200
-
+    return order.conversation(transcription.text)
+    
 
 @app.route("/upload", methods=["OPTIONS"])
 def upload_options():
