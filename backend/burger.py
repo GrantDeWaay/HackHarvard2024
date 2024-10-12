@@ -8,7 +8,7 @@ class Burger:
         self.sauce = 's' not in specs
 
     def __str__(self):
-     return "foo"
+      return self.menu_text()
     
     def menu_text(self):
        return_str = "BURGR"
