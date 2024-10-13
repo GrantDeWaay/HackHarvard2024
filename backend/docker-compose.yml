@@ -1,0 +1,11 @@
+version: "0.1" # You can specify the version based on your needs
+
+services:
+    flask:
+        build:
+            context: .
+            dockerfile: dockerfile
+        ports:
+            - "5000:5000"
+        env_file:
+            - .env
