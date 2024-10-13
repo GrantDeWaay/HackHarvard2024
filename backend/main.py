@@ -5,12 +5,14 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 import openai
 import subprocess
+from flask_cors import CORS
 
 from order import Order
 
 UPLOAD_FOLDER = "uploads"
 
 app = Flask(__name__)
+CORS(app)
 
 
 # Set your OpenAI API key
@@ -22,6 +24,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 client = openai.OpenAI()
 
 order = Order()
+
 
 # Endpoint to handle MP3 upload and transcription
 @app.route("/transcribe", methods=["POST"])
@@ -51,7 +54,7 @@ def transcribe_audio():
             model="whisper-1", file=audio_file
         )
     return order.conversation(transcription.text)
-    
+
 
 @app.route("/upload", methods=["OPTIONS"])
 def upload_options():
@@ -66,4 +69,4 @@ def get_transcriptions():
 
 if __name__ == "__main__":
     os.makedirs("uploads", exist_ok=True)
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, host="0.0.0.0")

@@ -138,11 +138,14 @@ const AudioRecorder: React.FC = () => {
     formData.append("file", audioBlob, "recording.webm"); // The key 'file' must match Flask's expectation
 
     try {
-      const response = await fetch("/transcribe", {
-        // Assuming Flask is running locally
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://bbavoso-flask--5000.prod1a.defang.dev/transcribe",
+        {
+          // Assuming Flask is running locally
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
