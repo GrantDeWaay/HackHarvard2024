@@ -30,17 +30,20 @@ a Shake cannot be chocolate and vanilla, categories that cannot coexist will be 
 
 Each menu item has its own set of tags. This is the set of tags:
 
-*Burger No lettuce (l), No tomato (t), No onion (o), No cheese (c), No Sauce (s)
+*burger No lettuce (l), No tomato (t), No onion (o), No cheese (c), No Sauce (s)
 *fries [Small (s), Medium (m), Large (l)]
 *onion rings [Small (s), Large (l)]
 *shake [Chocolate (c), Vanilla (v), Strawberry (S)] [Small (s), Large (l)]
+
+shakes must have a selected flavor, if the user does not specify the flavor, ask them what flavor they would like.
+never add a shake without a specified flavor
 
 Only add items to this output if they are on the menu.
 Unless there is uncertainty regarding the order, then simply output an empty array []
 """
 
 instruction_text_conversation = """
-You are a grumpy minimum wage worker in a fast food drive-thru line at HarvardBurger. the items HarvardBurger serves:
+You are a grumpy minimum wage worker in a fast food drive-thru line at HarvardBurger. The items HarvardBurger serves:
 *"burger" with Lettuce, Tomato, Onion, Cheese, Sauce
 *"fries" in sizes Small, Medium, and Large
 *"onion rings" in sizes Small and Large
@@ -64,73 +67,73 @@ class Order:
             elif "shake" in item:
                 self.items.append(Shake(item[5:]))
             elif "fries" in item:
-                print("is this reaching?")
                 self.items.append(Fries(item[5:]))
             elif "onion rings" in item:
                 self.items.append(Onion_Rings(item[11:]))
-            print([str(item) for item in specs])
+        print([str(item) for item in specs])
 
-def conversation(self, user_input):
-    # Append user input to message history
-    self.message_history.append({
-        "role": "user",
-        "content": [{"type": "text", "text": user_input}]
-    })
+    def conversation(self, user_input):
+        # Append user input to message history
+        self.message_history.append({
+            "role": "user",
+            "content": [{"type": "text", "text": user_input}]
+        })
 
-    # Function to get fast food worker response
-    def get_fast_food_worker_response():
-        return client.chat.completions.create(
-            model="gpt-4o",
-            messages=self.message_history
-        )
+        # Function to get fast food worker response
+        def get_fast_food_worker_response():
+            return client.chat.completions.create(
+                model="gpt-4o",
+                messages=self.message_history
+            )
 
-    # Function to get ordered food response
-    def get_ordered_food_response():
-        return client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": instruction_text_formatting},
-                {"role": "user", "content": user_input}
-            ]
-        )
+        # Function to get ordered food response (formatted order)
+        def get_ordered_food_response():
+            return client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": instruction_text_formatting},
+                    {"role": "user", "content": user_input}
+                ]
+            )
 
-    # Function to generate speech audio response
-    def generate_speech_audio_response(fast_food_worker_response):
-        response = client.audio.speech.create(
-            model="tts-1",
-            voice="alloy",
-            input=fast_food_worker_response.choices[0].message.content,
-        )
-        response.stream_to_file("speech.wav")
-        return "speech.wav"
+        # Function to generate speech audio response
+        def generate_speech_audio_response(fast_food_worker_response):
+            response = client.audio.speech.create(
+                model="tts-1",
+                voice="alloy",
+                input=fast_food_worker_response.choices[0].message.content,
+            )
+            response.stream_to_file("speech.wav")
+            return "speech.wav"
 
-    # Using concurrent.futures to run API calls and audio generation in parallel
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        # Schedule the tasks to be executed concurrently
-        future_fast_food_worker = executor.submit(get_fast_food_worker_response)
-        future_ordered_food = executor.submit(get_ordered_food_response)
+        # Using concurrent.futures to run API calls and audio generation in parallel
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            # Schedule the tasks to be executed concurrently
+            future_fast_food_worker = executor.submit(get_fast_food_worker_response)
+            future_ordered_food = executor.submit(get_ordered_food_response)
 
-        # Wait for both API calls to complete
-        completion_fast_food_worker = future_fast_food_worker.result()
-        completion_data_ordered_food = future_ordered_food.result()
+            # Wait for both API calls to complete
+            completion_fast_food_worker = future_fast_food_worker.result()
+            completion_data_ordered_food = future_ordered_food.result()
 
-        # Process the ordered food response
-        self.add_to_order(json.loads(completion_data_ordered_food.choices[0].message.content))
+            # Process the ordered food response (adding the items to the order)
+            formatted_order = json.loads(completion_data_ordered_food.choices[0].message.content)
+            self.add_to_order(formatted_order)
 
-        # Now generate speech audio concurrently
-        future_speech_audio = executor.submit(generate_speech_audio_response, completion_fast_food_worker)
+            # Now generate speech audio concurrently
+            future_speech_audio = executor.submit(generate_speech_audio_response, completion_fast_food_worker)
 
-        # Wait for the speech audio to be generated
-        speech_file = future_speech_audio.result()
+            # Wait for the speech audio to be generated
+            speech_file = future_speech_audio.result()
 
-    # Convert audio file to base64
-    with open(speech_file, 'rb') as audio_file:
-        audio_data = audio_file.read()
-        audio_base64 = base64.b64encode(audio_data).decode('utf-8')
+        # Convert audio file to base64
+        with open(speech_file, 'rb') as audio_file:
+            audio_data = audio_file.read()
+            audio_base64 = base64.b64encode(audio_data).decode('utf-8')
 
-    # Return the final response
-    return jsonify({
-        "transcription": user_input,
-        "audio_base64": audio_base64,
-        "menu_items": [str(item) for item in self.items]
-    }), 200
+        # Return the final response
+        return jsonify({
+            "transcription": user_input,
+            "audio_base64": audio_base64,
+            "menu_items": [str(item) for item in self.items]
+        }), 200
