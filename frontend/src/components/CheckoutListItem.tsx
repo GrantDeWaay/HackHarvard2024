@@ -73,8 +73,10 @@ const CheckoutListItem: React.FC<CheckoutListItemProps> = ({ name }) => {
     };
 
     let styledText = ""
-    
-    if (name[0] === 'b'){
+    if(name ==("No Items")){
+        styledText = "No Items"
+    }
+    else if (name[0] === 'b'){
         styledText = burgerFormat(name.substring(6, name.length))
     }
 
@@ -92,7 +94,7 @@ const CheckoutListItem: React.FC<CheckoutListItemProps> = ({ name }) => {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', border: '1px solid black', padding: '0', margin: '0' }}>
-            <pre>{styledText}</pre>
+            <pre className='terminalText'>{styledText}</pre>
         </div>
     );
 };

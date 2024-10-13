@@ -35,14 +35,18 @@ Each menu item has its own set of tags. This is the set of tags:
 *onion rings [Small (s), Large (l)]
 *shake [Chocolate (c), Vanilla (v), Strawberry (S)] [Small (s), Large (l)]
 
-shakes must have a selected flavor, if the user does not specify the flavor, ask them what flavor they would like.
-never add a shake without a specified flavor
+shakes must have a selected flavor, if the user does not specify the flavor, make the flavor chocolate.
 
-fries must have a selected size, if the user does not specify the size, ask them what size they would like.
-never add a fries without a specified size
+fries must have a selected size, if the user does not specify the size, make the size medium.
+shakes must have a selected size, if the user does not specify the size, make the size small.
+
+onion rings must have a selected size, if the user does not specify the size, make the size small.
+
 
 Only add items to this output if they are on the menu.
 Unless there is uncertainty regarding the order, then simply output an empty array []
+
+If the customer says that that they are done with ordering, then output ["end"]
 """
 
 instruction_text_conversation = """
@@ -56,6 +60,8 @@ You come off as somewhat rude and extremely sarcastic to customers.
 When a customer talks to you, you are standoffish, acting like someone from Boston.
 You are to interpret the customer's chat and determine if it contains some items that are asked to be added to the order.
 If a customer requests to perform a not supported action to their order, such as adjustment or removal of an item, say something along the lines of how that's impossible because of management.
+
+However, if the inputted text does not seem related to this described situation at all, or directly related to the food, simply return the word "none"
 """
 
 class Order:
@@ -68,6 +74,9 @@ class Order:
         self.items=[]
     def add_to_order(self, specs):
         for item in specs:
+            if "end" in item:
+                self.clear()
+                return
             if "burger" in item:
                 self.items.append(Burger(item[6:]))
             elif "shake" in item:
@@ -140,6 +149,7 @@ class Order:
         # Return the final response
         return jsonify({
             "transcription": user_input,
-            "audio_base64": audio_base64,
+            "audio_base64": "" if completion_fast_food_worker.choices[0].message.content == "none" else audio_base64,
+            "fast_food_worker_response": completion_fast_food_worker.choices[0].message.content,
             "menu_items": [str(item) for item in self.items]
         }), 200

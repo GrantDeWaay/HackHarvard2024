@@ -18,6 +18,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
   const silenceTimeout = useRef<number | null>(null);
   const silenceDetected = useRef(false); // Track silence detection
   const [speechResponse, setSpeechResponse] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [menuItems, setMenuItems] = useState<string[]>([]); // State for menu items
 
   const monitorAudioLevel = useCallback(
@@ -133,7 +134,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
   const sendToAPI = async (audioBlob: Blob) => {
     const formData = new FormData();
     formData.append("file", audioBlob, "recording.webm");
-
+    setIsFetching(true)
     try {
       const response = await fetch(
         "/transcribe",
@@ -146,6 +147,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
+        setIsFetching(false)
       }
 
       const result = await response.json();
@@ -158,20 +160,28 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
         setMenuItems(result.menu_items); // Set menu items in state
         onMenuItemsChange(result.menu_items); // Propagate to parent component
       }
+      setIsFetching(false)
     } catch (error) {
       console.error("Error uploading file:", error);
+      setIsFetching(false)
     }
   };
 
   const changeTranscription = (response: any) => {
-    const text = response.transcription;
-    setTranscription(text);
+    const text = response.fast_food_worker_response;
+    if(text === "none"){
+      setTranscription("");
+    }
+    else{
+      setTranscription(text);
+    }
+    
   };
 
   return (
     <div>
       <h1 id="recording-indicator">
-        {!recording ? "🔴 NOT RECORDING 🔴" : "🟢 RECORDING 🟢"}
+        {isFetching ? "Processing...": (!recording ? "🔴 Waiting on Customer... 🔴" : "🟢 Taking order... 🟢")}
       </h1>
 
       {audioURL && (

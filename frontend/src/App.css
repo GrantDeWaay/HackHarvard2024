@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 #recording-indicator,
 #transcription {
   text-align: center;
+  font-weight: bold;
 }
 
 .audio-container {
@@ -12,11 +15,66 @@
   display: flex;
 }
 
-.img{
-  width: 150px;
-  height: 150px;
+.empty{
+  padding: 0 0 0 0;
+  margin: 0px, 0px, 0px, 0px;
+  font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .Aligner-item {
   max-width: 50%;
 }
+
+.menu{
+  height:70vh;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+
+.slogan{
+  font-style: italic;
+  font-size: 16px;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+
+.textbox {
+  width: 50vw;
+  height: 70vh;
+  margin: 0 0 0 10px;
+  background-color: white;
+  border-radius: 8px;
+  overflow-y: auto;
+  border: 1px solid black;
+  border-top-right-radius: 25px;
+border-bottom-right-radius: 25px;
+border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+}
+
+.blackblack{
+  display:flex; flex-direction:row;
+  justify-content: center;
+  background-color:black;
+  padding: 10px;
+  border-radius: 25px;
+
+}
+.rowC{display:flex; flex-direction:row;
+  justify-content: center;}
+
+  .terminalText {
+    font-family: "VT323", monospace;
+    font-weight: 400;
+    font-style: normal;
+    padding: 0 0 0 10px; 
+    font-size: 36px;
+  }
+  
+  .bebas-neue-regular {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }

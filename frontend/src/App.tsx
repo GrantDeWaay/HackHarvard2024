@@ -36,13 +36,12 @@ function App() {
     <div className="App">
       <Header />
       <AudioRecorder onMenuItemsChange={handleMenuItemsChange} />
-      <div className="flex-container">
-        <img src={menu} alt="Logo" className="logo" />
-        <div className="right-column">
+      <div className='rowC'>
+        <div className="blackblack">
+        <img src={menu} alt="Logo" className="menu" />
+        <CheckoutList items={menuItems} />
         </div>
       </div>
-      <CheckoutList items={menuItems} />
-      <StateButton state={"start"} />
     </div>
   );
 }

@@ -6,15 +6,25 @@ interface CheckoutItemProps {
 }
 
 const CheckoutItem: React.FC<CheckoutItemProps> = ({ items }) => {
-    return (
-        <div style={{ backgroundColor: 'white', borderRadius: '8px', height: '300px', overflowY: 'auto', border: '1px solid black' }}>
-            {items.map((item, index) => (
-                <div key={index}>
-                    <CheckoutListItem name={item}/>
-                </div>
-            ))}
-        </div>
-    );
+    if(items?.length == 0){
+
+        return( 
+        <div className='textbox'>
+                <CheckoutListItem name={"No Items"}/>
+        </div>)
+    }
+    else{
+        return (
+            <div className='textbox'>
+                {items.map((item, index) => (
+                    <div key={index}>
+                        <CheckoutListItem name={item}/>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
 };
 
 export default CheckoutItem;

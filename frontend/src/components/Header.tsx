@@ -6,14 +6,18 @@ const Header: React.FC = () => {
         backgroundColor: '#A51C30', // Harvard's red
         color: 'white',
         textAlign: 'center',
-        padding: '10px 0',
-        height: '150px', // Set a height for consistent vertical alignment
+        padding: 'px 0',
+        height: '10vh', // Set a height for consistent vertical alignment
     };
 
     return (
         <header className={"flex-container"} style={headerStyle}>
             <img className={"img"} src={menu} alt="Burger Logo"></img>
-            <h1 className={"Aligner-item"}>Harvard Burger</h1>
+            <div>
+            <h1 className='empty'>Harvard Burger</h1>
+            <h1 className={"slogan"}> "You Want Fries with That?"</h1>
+            </div>
+
         </header>
     );
 };
