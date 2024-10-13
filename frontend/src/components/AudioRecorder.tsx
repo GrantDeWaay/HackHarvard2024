@@ -186,7 +186,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
 
       {audioURL && (
         <div className="audio-container">
-          <audio src={audioURL} controls />
+          <audio src={audioURL} />
         </div>
       )}
       {transcription && <p id="transcription">{transcription}</p>}
