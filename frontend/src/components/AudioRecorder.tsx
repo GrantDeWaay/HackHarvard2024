@@ -137,7 +137,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
     setIsFetching(true)
     try {
       const response = await fetch(
-        "/transcribe",
+        "https://bbavoso-backend--5000.prod1a.defang.dev/transcribe",
         {
           // Assuming Flask is running locally
           method: "POST",
@@ -186,7 +186,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
 
       {audioURL && (
         <div className="audio-container">
-          <audio src={audioURL} />
+          <audio src={audioURL} controls />
         </div>
       )}
       {transcription && <p id="transcription">{transcription}</p>}
