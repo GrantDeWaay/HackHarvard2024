@@ -58,6 +58,12 @@ def upload_options():
     return "", 20
 
 
+@app.route("/clear", methods=["GET"])
+def clear_array():
+    order.clear()
+    return "", 200
+
+
 # Endpoint to view all transcriptions
 @app.route("/transcriptions", methods=["GET"])
 def get_transcriptions():

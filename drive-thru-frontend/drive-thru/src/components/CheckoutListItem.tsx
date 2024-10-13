@@ -20,26 +20,26 @@ const CheckoutListItem: React.FC<CheckoutListItemProps> = ({ name }) => {
         let returnStr = "";
     
         if (entry.includes('s')) {
-            returnStr += "SML";
+            returnStr += "SML ";
         } else if (entry.includes('m')) {
-            returnStr += "MED";
+            returnStr += "MED ";
         } else if (entry.includes('l')) {
-            returnStr += "LRG";
+            returnStr += "LRG ";
         }
     
-        returnStr += " FRIES";
+        returnStr += "FRIES";
         return returnStr;
     };
 
     const shakeFormat = (entry: string) : string => {
         let returnStr = ""
         if (entry.includes('s')){
-            returnStr = returnStr + "SML"
+            returnStr = returnStr + "SML "
         }
         else if (entry.includes('l')){
-            returnStr = returnStr + "LRG"
+            returnStr = returnStr + "LRG "
         }
-        returnStr += " SHAKE";
+        returnStr += "SHAKE";
         if (entry.includes('c')){
             returnStr = returnStr + "\n\tCHCL"
         }

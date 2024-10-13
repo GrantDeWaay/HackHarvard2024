@@ -60,6 +60,9 @@ class Order:
         self.message_history = [{"role": "system", "content": instruction_text_conversation}]
         self.items = []
 
+    def clear(self):
+        self.message_history = [{"role": "system", "content": instruction_text_conversation}]
+        self.items=[]
     def add_to_order(self, specs):
         for item in specs:
             if "burger" in item:
