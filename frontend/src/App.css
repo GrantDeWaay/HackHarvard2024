@@ -7,3 +7,16 @@
   display: flex;
   justify-content: center;
 }
+
+.flex-container {
+  display: flex;
+}
+
+.img{
+  width: 150px;
+  height: 150px;
+}
+
+.Aligner-item {
+  max-width: 50%;
+}

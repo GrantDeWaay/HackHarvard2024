@@ -4,11 +4,9 @@ import AudioRecorder from "./components/AudioRecorder";
 import CheckoutList from "./components/CheckoutList";
 import Header from "./components/Header";
 import StateButton from "./components/StateButton";
-import menu from './HarvardBurger.png';
 
 function App() {
   const [menuItems, setMenuItems] = useState<string[]>([]);
-  
   const handleMenuItemsChange = (newMenuItems: string[]) => {
     setMenuItems(newMenuItems);
   };
@@ -21,6 +19,7 @@ function App() {
         });
         if (response.ok) {
           console.log("Menu cleared successfully");
+          // Handle the response if necessary
         } else {
           console.error("Failed to clear menu", response.status);
         }
@@ -35,14 +34,10 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <img src={"./HarvardBurger.png"}></img>
       <AudioRecorder onMenuItemsChange={handleMenuItemsChange} />
-      <div className="flex-container">
-        <img src={menu} alt="Logo" className="logo" />
-        <div className="right-column">
-        </div>
-      </div>
       <CheckoutList items={menuItems} />
-      <StateButton state={"start"} />
+      <StateButton state={"start"}/>
     </div>
   );
 }

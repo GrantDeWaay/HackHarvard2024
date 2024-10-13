@@ -38,6 +38,9 @@ Each menu item has its own set of tags. This is the set of tags:
 shakes must have a selected flavor, if the user does not specify the flavor, ask them what flavor they would like.
 never add a shake without a specified flavor
 
+fries must have a selected size, if the user does not specify the size, ask them what size they would like.
+never add a fries without a specified size
+
 Only add items to this output if they are on the menu.
 Unless there is uncertainty regarding the order, then simply output an empty array []
 """

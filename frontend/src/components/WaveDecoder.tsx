@@ -36,7 +36,7 @@ function WaveDecoder({ base64Data }: { base64Data: string }) {
   };
 
   return (
-    <div>{audioSrc && <audio ref={audioRef} controls src={audioSrc} />}</div>
+    <div>{audioSrc && <audio ref={audioRef} src={audioSrc} />}</div>
   );
 }
 
