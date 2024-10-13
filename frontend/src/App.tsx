@@ -13,9 +13,12 @@ function App() {
   useEffect(() => {
     const clearMenu = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/clear", {
-          method: "GET",
-        });
+        const response = await fetch(
+          "https://bbavoso-backend--5000.prod1a.defang.dev/clear",
+          {
+            method: "GET",
+          }
+        );
         if (response.ok) {
           console.log("Menu cleared successfully");
           // Handle the response if necessary
