@@ -4,11 +4,11 @@ import AudioRecorder from "./components/AudioRecorder";
 import CheckoutList from "./components/CheckoutList";
 import Header from "./components/Header";
 import StateButton from "./components/StateButton";
-import menu from './HarvardBurger.png';
+import menu from "./HarvardBurger.png";
 
 function App() {
   const [menuItems, setMenuItems] = useState<string[]>([]);
-  
+
   const handleMenuItemsChange = (newMenuItems: string[]) => {
     setMenuItems(newMenuItems);
   };
@@ -16,12 +16,9 @@ function App() {
   useEffect(() => {
     const clearMenu = async () => {
       try {
-        const response = await fetch(
-          "https://bbavoso-backend--5000.prod1a.defang.dev/clear",
-          {
-            method: "GET",
-          }
-        );
+        const response = await fetch("/clear", {
+          method: "GET",
+        });
         if (response.ok) {
           console.log("Menu cleared successfully");
         } else {
@@ -39,10 +36,10 @@ function App() {
     <div className="App">
       <Header />
       <AudioRecorder onMenuItemsChange={handleMenuItemsChange} />
-      <div className='rowC'>
+      <div className="rowC">
         <div className="blackblack">
-        <img src={menu} alt="Logo" className="menu" />
-        <CheckoutList items={menuItems} />
+          <img src={menu} alt="Logo" className="menu" />
+          <CheckoutList items={menuItems} />
         </div>
       </div>
     </div>

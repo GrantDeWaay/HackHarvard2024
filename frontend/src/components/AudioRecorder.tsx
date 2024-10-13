@@ -134,20 +134,17 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
   const sendToAPI = async (audioBlob: Blob) => {
     const formData = new FormData();
     formData.append("file", audioBlob, "recording.webm");
-    setIsFetching(true)
+    setIsFetching(true);
     try {
-      const response = await fetch(
-        "https://bbavoso-backend--5000.prod1a.defang.dev/transcribe",
-        {
-          // Assuming Flask is running locally
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch("/transcribe", {
+        // Assuming Flask is running locally
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
-        setIsFetching(false)
+        setIsFetching(false);
       }
 
       const result = await response.json();
@@ -160,28 +157,30 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onMenuItemsChange }) => {
         setMenuItems(result.menu_items); // Set menu items in state
         onMenuItemsChange(result.menu_items); // Propagate to parent component
       }
-      setIsFetching(false)
+      setIsFetching(false);
     } catch (error) {
       console.error("Error uploading file:", error);
-      setIsFetching(false)
+      setIsFetching(false);
     }
   };
 
   const changeTranscription = (response: any) => {
     const text = response.fast_food_worker_response;
-    if(text === "none"){
+    if (text === "none") {
       setTranscription("");
-    }
-    else{
+    } else {
       setTranscription(text);
     }
-    
   };
 
   return (
     <div>
       <h1 id="recording-indicator">
-        {isFetching ? "Processing...": (!recording ? "🔴 Waiting on Customer... 🔴" : "🟢 Taking order... 🟢")}
+        {isFetching
+          ? "Processing..."
+          : !recording
+          ? "🔴 Waiting on Customer... 🔴"
+          : "🟢 Taking order... 🟢"}
       </h1>
 
       {audioURL && (
